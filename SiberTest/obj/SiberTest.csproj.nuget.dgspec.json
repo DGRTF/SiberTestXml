@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\Documents\\Repositorys\\SiberTest\\SiberTest\\SiberTest.csproj": {}
+    "C:\\Users\\User\\Documents\\Repositorys\\SiberTestXml\\SiberTest\\SiberTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\Documents\\Repositorys\\SiberTest\\SiberTest\\SiberTest.csproj": {
+    "C:\\Users\\User\\Documents\\Repositorys\\SiberTestXml\\SiberTest\\SiberTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Documents\\Repositorys\\SiberTest\\SiberTest\\SiberTest.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Documents\\Repositorys\\SiberTestXml\\SiberTest\\SiberTest.csproj",
         "projectName": "SiberTest",
-        "projectPath": "C:\\Users\\User\\Documents\\Repositorys\\SiberTest\\SiberTest\\SiberTest.csproj",
+        "projectPath": "C:\\Users\\User\\Documents\\Repositorys\\SiberTestXml\\SiberTest\\SiberTest.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Documents\\Repositorys\\SiberTest\\SiberTest\\obj\\",
+        "outputPath": "C:\\Users\\User\\Documents\\Repositorys\\SiberTestXml\\SiberTest\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
