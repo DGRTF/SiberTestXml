@@ -82,7 +82,7 @@ namespace SiberTest
 
 
 
-             public string Characters(string s) // восттанавливаем специальные символы
+            public string Characters(string s) // восттанавливаем специальные символы
             {
                 s = s.Replace("&amp;", "&");
                 s = s.Replace("&lt;", "<");
@@ -109,51 +109,37 @@ namespace SiberTest
             public void Read(ListNode Head, int count)
             {
 
-                for (; ; )
+                while (count != 0)
                 {
-                    if (count == 0)
-                    {
-                        return;
-                    }
+                    Console.WriteLine("Element:" + Head.Data);
+                    Console.Write("Родительский элемент:");
+                    if (Head.Previous != null)
+                        Console.WriteLine(Head.Previous.Data);
                     else
                     {
-
-                        if (Head != null)
-                        {
-                            Console.WriteLine("Element:" + Head.Data);
-                            Console.Write("Родительский элемент:");
-                            if (Head.Previous != null)
-                                Console.WriteLine(Head.Previous.Data);
-                            else
-                            {
-                                Console.WriteLine();
-                            }
-
-                            Console.Write("Рандомный элемент:");
-                            if (Head.Random != null)
-                                Console.WriteLine(Head.Random.Data);
-                            else
-                            {
-                                Console.WriteLine();
-                            }
-
-                            Console.Write("Следующий элемент:");
-                            if (Head.Next != null)
-                                Console.WriteLine(Head.Next.Data);
-                            else
-                            {
-                                Console.WriteLine();
-                            }
-                            Console.WriteLine();
-                            Console.WriteLine();
-
-                            if (Head.Next != null)
-                            {
-                                Head = Head.Next;
-                                count--;
-                            }
-                        }
+                        Console.WriteLine();
                     }
+
+                    Console.Write("Рандомный элемент:");
+                    if (Head.Random != null)
+                        Console.WriteLine(Head.Random.Data);
+                    else
+                    {
+                        Console.WriteLine();
+                    }
+
+                    Console.Write("Следующий элемент:");
+                    if (Head.Next != null)
+                        Console.WriteLine(Head.Next.Data);
+                    else
+                    {
+                        Console.WriteLine();
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine();
+
+                    Head = Head.Next;
+                    count--;
                 }
             }
 
@@ -208,38 +194,7 @@ namespace SiberTest
 
             }
 
-
-
         }
-
-
-        //public class XmlAnalyzer
-        //{
-        //    public string RootElement(string s) // находим корневой элемент
-        //    {
-        //        // удаляем объявление xml
-        //        s = s.Remove(0, s.IndexOf("?>") + 1);
-
-        //        // ищем корневой элемент
-        //        int first;
-        //        int last;
-
-
-        //        foreach(char i in s.ToArray())
-        //        {
-        //        //    if(i=='')
-        //        }
-        //    }
-        //    public string Atributes(string s)// находим атрибуты элемента
-        //    {
-
-        //    }
-        //    public string[] ChildElements(string s)// находим дочерние элементы внутри узла
-        //    {
-
-        //    }
-        //}
-
 
 
         public class RandomOb
@@ -293,12 +248,13 @@ namespace SiberTest
 
                         if (Head.Data != null) // если свойство дата задано, то вписываем его
                             xml = "<Object Data=\"" + sb.RepCharacters(Head.Data) + "\" ";
-                        
+
                         if (Head.Random != null) //если рандомный элемент задан, то задаём его номер
                             xml += "Random=\"" + listR.Number(Head.Random).ToString() + "\"";
-                        
+
                         xml += "/>";
                         list[count] = xml;
+
                         if (Head.Next != null)
                         {
                             count++;
@@ -337,7 +293,7 @@ namespace SiberTest
             }
 
 
-            public ListNode[]Create(string[] obj)// Создаём объекты из массива строк xml
+            public ListNode[] Create(string[] obj)// Создаём объекты из массива строк xml
             {
                 StringSymbol sb = new StringSymbol();
                 ListNode[] lis = new ListNode[obj.Length]; // массив объектов listNode
@@ -346,10 +302,8 @@ namespace SiberTest
                 string ob; // изменяемая строка для выделения значений свойств
                 foreach (string i in obj)
                 {
-                    if (i == null)
-                        continue;
                     ListNode ln = new ListNode();
-                    if(count!=0)
+                    if (count != 0)
                     {
                         lis[count - 1].Next = ln;
                         ln.Previous = lis[count - 1];
@@ -375,314 +329,12 @@ namespace SiberTest
                     lis[count] = ln;
                     count++;
                 }
-                
+
                 RandomOb random = new RandomOb();
                 return random.AddRandom(lis, run);
 
             }
         }
-
-
-
-        //public class CreateList
-        //{
-        //    public List<ListNode> Create(string[] s)// создаем объекты из массива строк
-        //    {
-        //        List<ListNode> list = new List<ListNode>();
-        //        StringBit sb = new StringBit();
-        //        StringForm sf = new StringForm();
-        //        List<string> number = new List<string>();
-        //        string numberob;
-        //        string g;
-        //        int n;
-        //        foreach (string i in s)
-        //        {
-
-        //            // если строка равна 1
-        //            if (i == sf.ToBitString("1"))
-        //            {
-        //                ListNode ln = new ListNode();// создаем объект без рандомного элемента и поля data
-        //                list.Add(ln);
-        //                if (list.IndexOf(ln) != 0) // если перед ним в списке есть объект, то задем текущий элемента свойству Next предыдущего объекта ,а полю Previous текущего элемента ссылку на предыдущий
-        //                {
-        //                    list[list.IndexOf(ln) - 1].Next = ln;
-        //                    ln.Previous = list[list.IndexOf(ln) - 1];
-        //                }
-        //            }
-
-        //            else
-        //            {
-        //                // если в строке индекс первого вхождения двух пробелов равен 0
-        //                if (i.IndexOf("  ") == 0)
-        //                {
-        //                    string gg = i.Remove(0,2); // удаляем первые два пробела
-        //                    int index = gg.IndexOf("  "); // находим индекс первого вхождения двух пробелов
-        //                    g = gg.Remove(index, gg.Length - index);// извлекаем первый символ в бинарном виде  
-        //                    numberob = sb.BitTextToString(g);// переводим из битового текста в строку
-
-        //                    // извлекаем второй символ в бинарном виде
-        //                    g = gg.Remove(0, index + 2);
-        //                    numberob += " " + sb.BitTextToString(g);
-        //                    number.Add(numberob);
-        //                    ListNode ln = new ListNode();// создаём объект без поля Data
-        //                    list.Add(ln);
-        //                    if (list.IndexOf(ln) != 0)
-        //                    {
-        //                        list[list.IndexOf(ln) - 1].Next = ln;
-        //                        ln.Previous = list[list.IndexOf(ln) - 1];
-        //                    }
-        //                }
-
-
-        //                else
-        //                {
-
-
-        //                    if (i.IndexOf("  ") != -1) // если строка содержит два пробела
-        //                    {
-
-        //                        n = i.IndexOf("  "); // находим индекс первого вхождения двух пробелов
-        //                        g = i.Remove(0, n + 2); // удаляем все записи от нуля до конца первых двух пробелов
-        //                        int index = g.IndexOf("  ");
-        //                        g = g.Remove(index, g.Length - index);// извлекаем первый символ в бинарном виде  
-        //                        numberob = sb.BitTextToString(g);// переводим из битового текста в строку
-        //                        // извлекаем второй символ в бинарном виде
-        //                        g = i.Remove(0, n + 2);
-        //                        g = g.Remove(0, index + 2);
-        //                        numberob += " " + sb.BitTextToString(g);
-        //                        number.Add(numberob);
-        //                        // создаём объект с полем Data и cсылкой на рандомный элемент
-        //                        g = i.Remove(n, i.Length - n); // удаляем первые два пробела и всё после них
-        //                        g = sb.BitTextToString(g);
-        //                        // переводим из битового текста в строку
-        //                        ListNode ln = new ListNode { Data = g };
-        //                        list.Add(ln);
-        //                        if (list.IndexOf(ln) != 0) // если перед ним в списке есть объект, то задем текущий элемента свойству Next предыдущего объекта ,а полю Previous текущего элемента ссылку на предыдущий
-        //                        {
-        //                            list[list.IndexOf(ln) - 1].Next = ln;
-        //                            ln.Previous = list[list.IndexOf(ln) - 1];
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        if (i != " " && i != "  ")
-        //                        {
-
-        //                            ListNode ln = new ListNode { Data = sb.BitTextToString(i) }; // создаём объект без cсылки на рандомный элемент
-        //                            list.Add(ln);
-        //                            if (list.IndexOf(ln) != 0) // если перед ним в списке есть объект, то задем текущий элемента свойству Next предыдущего объекта ,а полю Previous текущего элемента ссылку на предыдущий
-        //                            {
-        //                                list[list.IndexOf(ln) - 1].Next = ln;
-        //                                ln.Previous = list[list.IndexOf(ln) - 1];
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-
-        //        return list = AddRandom(list, number);
-        //    }
-
-
-
-        //    List<ListNode> AddRandom(List<ListNode> list, List<string> number) // добавляем рандомные объекты
-        //    {
-        //        List<Number> obj = new List<Number>();
-        //        int index;
-        //        foreach (string i in number) // переводим из строк в числа двух полей объекта Number
-        //        {
-        //            index = i.IndexOf(" ");
-        //            Number num = new Number();
-        //            num.element = Convert.ToInt32(i.Remove(index, i.Length - index));
-        //            num.random = Convert.ToInt32(i.Remove(0, index));
-        //            obj.Add(num);
-        //        }
-        //        foreach (Number i in obj) // добавляем рандомные объекты элементам списка объекты
-        //        {
-        //            list[i.element].Random = list[i.random];
-        //        }
-        //        return list;
-        //    }
-
-
-
-        //    class Number // набор чисел элемнта и рандомного объекта
-        //    {
-        //        public int element;
-        //        public int random;
-        //    }
-
-
-
-        //}
-
-
-
-        //public class StringBit
-        //{
-
-
-        //    public string[] DivideText(string s)// делим битовый текст на строки
-        //    {
-        //        //string g = s;
-        //        string [] outs= new string[0];
-        //        string[] sub = new string[0];
-        //        for (; ; )
-        //        {
-        //            if (s != "")
-        //            {
-        //                if (s.IndexOf("   ") != -1) // если найдено три пробела подряд
-        //                {
-        //                    int i = s.IndexOf("   "); // получаем индекс первого пробела первого вхождения
-        //                    Array.Resize(ref sub, sub.Length + 1); // увеличиваем размер массива строк на 1
-        //                    sub[^1] = s.Remove(i, s.Length - i); //удаляем начиная с первого пробела из трех подряд и до конца строки, присваеваем значение индексу массива
-        //                    s = s.Remove(0, i + 3); // удаляем из строки все символы от нулевого до первго вхождения последнего пробела из 3 +3 элемента
-        //                }
-        //                else
-        //                {
-        //                    if (s != " " && s != "  ")
-        //                    {
-        //                        Array.Resize(ref sub, sub.Length + 1); // увеличиваем размер массива строк на 1
-        //                        sub[^1] = s;
-        //                    }
-        //                    return sub;
-        //                }
-        //            }
-        //        }
-        //       // Console.WriteLine("Поделили текст на строки, вывод:{0}", sub);
-        //        return sub;
-        //    }
-
-
-
-        //    public string BitTextToString(string s) // преобразуем бинарную строку в алфавитную
-        //    {
-        //        string back = "";
-        //        string outback = "";
-        //        char cback;
-        //        for (int i = 0; i < s.Length; i++)
-        //        {
-        //            if (s[i] != ' ')
-        //            {
-        //                back += Convert.ToString(s[i]);
-
-        //                if (i == s.Length - 1)
-        //                {
-        //                    short sh = Convert.ToInt16(back, 2);
-        //                    cback = Convert.ToChar(sh);
-        //                    outback += cback.ToString();
-        //                    back = "";
-        //                }
-        //            }
-        //            else
-        //            {
-        //                short sh = Convert.ToInt16(back, 2);
-        //                cback = Convert.ToChar(sh);
-        //                outback += cback.ToString();
-        //                back = "";
-        //            }
-        //        }
-        //        return outback;
-        //    }
-        //}
-
-
-
-        //public class StringForm
-        //{
-
-
-
-        //    public string AddString(ListNode list) // складываем строки
-        //    {
-        //        string s = "";
-        //        for (; ; )
-        //        {
-        //            if (list != null)
-        //            {
-        //                if (list.Data == "" || list.Data == null && list.Random == null) // если задана пустая строка объекта и рандомный элемент не задан
-        //                {
-        //                    s += ToBitString("1");
-        //                }
-        //                else
-        //                {
-        //                    s += ToBitString(list.Data);
-
-        //                    if (list.Random != null) // если рандомный элемент задан
-        //                    {
-
-        //                        // номер текущего объекта в списке отсчитывамый от нуля
-        //                        string g = Number(list).ToString();
-        //                        s += "  " + ToBitString(g);
-        //                        // номер рандомного объекта в списке отсчитывамый от нуля
-        //                        g = Number(list.Random).ToString();
-        //                        s += "  " + ToBitString(g);
-        //                    }
-
-
-        //                }
-        //                if (list.Next != null)
-        //                {
-        //                    s += "   ";
-        //                    list = list.Next;
-        //                }
-        //                else
-        //                {
-        //                    return s;
-        //                }
-        //            }
-        //        }
-
-        //    }
-
-
-
-        //    public string ToBitString(string s) // преобразуем в биты
-        //    {
-        //        if (s == "" || s == null)
-        //        {
-        //            return "";
-        //        }
-        //        else
-        //        {
-        //            string g;
-        //            string bin = "";
-        //            char[] a = s.ToCharArray();
-        //            foreach (char i in a)
-        //            {
-        //                g = Convert.ToString(i, 2);
-        //                bin += g;
-        //                bin += " ";
-        //            }
-        //            // удаляем последний пробел в строке
-        //            int x1;
-        //            x1 = bin.Length - 1;
-        //            bin = bin.Substring(0, x1);
-
-        //            return bin;
-        //        }
-        //    }
-
-
-
-        //    int Number(ListNode list) // номер объекта в списке отсчитывамый от нуля
-        //    {
-        //        int number = 0;
-        //        for (; ; )
-        //        {
-        //            if (list.Previous != null)
-        //            {
-        //                number++;
-        //                list = list.Previous;
-        //            }
-        //            else
-        //                return number;
-        //        }
-
-        //    }
-        //}
-
 
 
 
@@ -714,30 +366,22 @@ namespace SiberTest
             {
                 if (Head != null)
                 {
-                    bool l;
-                    //if (Head.Previous == null)
-                    //{
+                    string bin = "<?xml version=\"1.0\" encoding=\"utf-16\" ?>";
                     //если список замкнут, то разрываем последний элемент списка с первым
                     ListRead lr = new ListRead();
                     if (lr.ListClose(Head, Count))
                     {
-                        l = true;
                         Console.WriteLine("Список является замкнутым!");
                         Head.Previous.Next = null;
                         Head.Previous = null;
+                        bin += "<List Close =\"1\">";
                     }
                     else // Если список не замкнут, то находим родительский элемент списка(Если случайно задан не родительский)
                     {
                         Console.WriteLine("Cписок не замкнут");
-                        l = false;
                         Head = lr.HeadEl(Head);
-                    }
-
-                    string bin = "<?xml version=\"1.0\" encoding=\"utf-16\" ?>";
-                    if (l) // если список замкнут, устанавливаем в битовой строке еденицу первым символом
-                        bin += "<List Close =\"1\">";
-                    else // в протвном случае - 0
                         bin += "<List Close =\"0\">";
+                    }
 
                     // добавляем дочерние элементы в список xml
                     ObjectToXml o = new ObjectToXml();
@@ -759,7 +403,6 @@ namespace SiberTest
                     }
                     using (stream)// записываем в файл
                     {
-
                         // запись массива байтов в файл
                         stream.Write(by, 0, by.Length);
 
@@ -768,11 +411,7 @@ namespace SiberTest
                         Console.WriteLine("-------------------------------------------------");
                         Console.WriteLine();
                     }
-                    //}
-                    //else
-                    //{
-                    //    Console.WriteLine("Неправильно задан родительский элемент списка");
-                    //}
+
                 }
                 else
                 {
@@ -800,46 +439,53 @@ namespace SiberTest
                     {
                         //try
                         //{
-                            // преобразуем байты в битовый текст
-                            char[] cha = new char[by.Length];
-                            int coun = 0;
-                            foreach (byte i in by) // преобразуем байты в символы
-                            {
-                                cha[coun] = Convert.ToChar(i);
-                                coun++;
-                            }
 
-                            string strbyte = "";
-                            foreach (char i in cha) //преобразуем символы в текст
-                            {
-                                strbyte += i.ToString();
-                            }
 
-                            strbyte = strbyte.Remove(0, strbyte.IndexOf("?>")+2); //удаляем объявление xml
-                            string strclose = strbyte.Remove(0, strbyte.IndexOf("\"") + 1);// выделяем свойство Close ,которое указывает, замкнут ли список
-                            strclose = strclose.Remove(strclose.IndexOf("\""), strclose.Length - strclose.IndexOf("\""));
-                            strbyte = strbyte.Remove(0, strbyte.IndexOf(">")+1); // удаляем родительский элемент из разметки вначале
-                            strbyte = strbyte.Remove(strbyte.LastIndexOf("<"), strbyte.Length - strbyte.LastIndexOf("<")); // удаляем родительский элемент вконце разметки
 
-                            // создаём двусвязный список из строк
-                            XmlToObject xml = new XmlToObject();
-                            ListNode[] list = xml.Create(xml.StrElem(strbyte));
-                            Console.WriteLine("Список восстановлен!");
+
+                        // преобразуем байты в текст
+                        char[] cha = new char[by.Length];
+                        int coun = 0;
+                        foreach (byte i in by) // преобразуем байты в символы
+                        {
+                            cha[coun] = Convert.ToChar(i);
+                            coun++;
+                        }
+
+                        string strbyte = "";
+                        foreach (char i in cha) //преобразуем символы в текст
+                        {
+                            strbyte += i.ToString();
+                        }
+
+                        strbyte = strbyte.Remove(0, strbyte.IndexOf("?>") + 2); //удаляем объявление xml
+                        string strclose = strbyte.Remove(0, strbyte.IndexOf("\"") + 1);// выделяем свойство Close ,которое указывает, замкнут ли список
+                        strclose = strclose.Remove(strclose.IndexOf("\""), strclose.Length - strclose.IndexOf("\""));
+                        strbyte = strbyte.Remove(0, strbyte.IndexOf(">") + 1); // удаляем родительский элемент из разметки вначале
+                        strbyte = strbyte.Remove(strbyte.LastIndexOf("<"), strbyte.Length - strbyte.LastIndexOf("<")); // удаляем родительский элемент вконце разметки
+
+
+
+
+
+
+                        // создаём двусвязный список из строк
+                        XmlToObject xml = new XmlToObject();
+                        ListNode[] list = xml.Create(xml.StrElem(strbyte));
+                        Console.WriteLine("Список восстановлен!");
+                        Console.WriteLine();
+
+                        Head = list[0];
+                        Tail = list[^1];
+                        Count = list.Length;
+
+                        if (strclose == "1") // если вначале текста была еденица, то список замкнут.делаем связь между первым и последним элементом
+                        {
+                            Head.Previous = Tail;
+                            Tail.Next = Head;
+                            Console.WriteLine("Список замкнут");
                             Console.WriteLine();
-                         Head = list[0];                            
-                            Tail = Head;
-                        while (Tail.Next != null)
-                            Tail = Tail.Next;
-                        Console.WriteLine(Tail.Data);
-                       // Tail = Tail.Next;
-                            Count = list.Length;
-                            if (strclose == "1") // если вначале текста была еденица, то список замкнут.делаем связь между первым и последним элементом
-                            {
-                                Head.Previous = Tail;
-                                Tail.Next = Head;
-                               // Console.WriteLine("Список замкнут");
-                                //Console.WriteLine();
-                            }
+                        }
                         //}
                         //catch
                         //{
@@ -857,7 +503,7 @@ namespace SiberTest
 
 
 
-        static void Main(string[] args)
+        static void Main()
         {
             // создаем коллекцию двусвязного списка
             ListNode ln = new ListNode { Data = "Gena" };
@@ -913,10 +559,10 @@ namespace SiberTest
             ListRandom lr1 = new ListRandom();
             //try
             //{
-                FileStream stream = new FileStream(@$"{path}\note.xml", FileMode.Create);
-                lr.Serialize(stream);
-                FileStream stream1 = File.OpenRead(@$"{path}\note.xml");
-                lr1.Deserialize(stream1);
+            FileStream stream = new FileStream(@$"{path}\note.xml", FileMode.Create);
+            lr.Serialize(stream);
+            FileStream stream1 = File.OpenRead(@$"{path}\note.xml");
+            lr1.Deserialize(stream1);
             //}
             //catch
             //{
