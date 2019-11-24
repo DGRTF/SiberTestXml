@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace SiberTest
 {
@@ -23,150 +24,73 @@ namespace SiberTest
     class Program
     {
 
-        //public class BinSpacing
-        //{
-        //    public string WithoutSpa (string s)// из бинарного текста в бинарный текст без пробелов
-        //    {
-        //        string outs="";
-        //        foreach(char i in s.ToCharArray())
-        //        {
-        //            if(i=='0')
-        //            {
-        //                outs += "00";
-        //            }
-        //            else
-        //            {
-        //                if(i=='1')
-        //                {
-        //                    outs += "01";
-        //                }
-        //                else
-        //                {
-        //                    if (i == ' ')
-        //                    {
-        //                        outs += "11";
-        //                    }
-        //                    else
-        //                    {
-        //                        Console.WriteLine("Некоректный битовый текст с пробелами");
-        //                        return "";
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        return outs;
-        //    }
+
+        public class EncodingString
+        {
+            public string StringToUTF(string s) // из юникода в utf-8
+            {
+                Encoding utf = Encoding.UTF8;
+                Encoding unicode = Encoding.Unicode;
+
+                // Convert the string into a byte array.
+                byte[] unicodeBytes = unicode.GetBytes(s);
+
+                // Perform the conversion from one encoding to the other.
+                byte[] asciiBytes = Encoding.Convert(unicode, utf, unicodeBytes);
+
+                // Convert the new byte[] into a char[] and then into a string.
+                char[] asciiChars = new char[utf.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
+                utf.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
+                s = new string(asciiChars);
+                Console.WriteLine(s);
+                return s;
+            }
 
 
-        //    public string WithSpa(string s) // из бинарного текста в бинарный текст с пробелами
-        //    {
-        //        if (s != "")
-        //        {
-        //            if (s != null)
-        //            {
-        //                if (s.Length % 2 == 0)
-        //                {
-        //                    string outs="";
-        //                    string modif="";
+            public string UTFToString(string s) // из utf-8 в юникод
+            {
+                Encoding utf = Encoding.UTF8;
+                Encoding unicode = Encoding.Unicode;
+
+                // Convert the string into a byte array.
+                byte[] unicodeBytes = utf.GetBytes(s);
+
+                // Perform the conversion from one encoding to the other.
+                byte[] asciiBytes = Encoding.Convert(utf, unicode, unicodeBytes);
+
+                // Convert the new byte[] into a char[] and then into a string.
+                char[] asciiChars = new char[utf.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
+                unicode.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
+                s = new string(asciiChars);
+                Console.WriteLine(s);
+                return s;
+            }
+        }
 
 
 
-        //                    char[] chars = s.ToCharArray();
-        //                    for (int i = 0; i < chars.Length; i++)
-        //                    {
-        //                        if (i == 0)
-        //                        {
-
-        //                            modif = chars[i].ToString();
-        //                        }
-        //                        else
-        //                        {
-        //                            if (i == 1)
-        //                            {
-        //                                modif += chars[i].ToString();
-        //                            }
-        //                            else
-        //                            {
-        //                                if (i%2 == 0)
-        //                                {
-        //                                    if (modif == "00")
-        //                                    {
-        //                                        outs += "0";
-        //                                        modif = chars[i].ToString();
-        //                                    }
-        //                                    else
-        //                                    {
-        //                                        if (modif == "01")
-        //                                        { 
-        //                                            outs += "1";
-        //                                            modif = chars[i].ToString();
-        //                                        }
-        //                                        else
-        //                                        {
-        //                                            if (modif == "11")
-        //                                            {
-        //                                                outs += " ";
-        //                                                modif = chars[i].ToString();
-        //                                            }
-        //                                            else
-        //                                            {
-        //                                                Console.WriteLine("Неправильный формат битового текста без пробелов");
-        //                                                return "";
-        //                                            }
-        //                                        }
-        //                                    }
-        //                                }
-        //                                else
-        //                                {
-        //                                    modif += chars[i].ToString();
-        //                                }
-        //                            }
-        //                        }
-                                
-                               
-        //                    }
-        //                    if (modif == "00")
-        //                        outs += "0";
-        //                    else
-        //                    {
-        //                        if (modif == "01")
-        //                            outs += "1";
-        //                        else
-        //                        {
-        //                            if (modif == "11")
-        //                                outs += " ";
-        //                            else
-        //                            {
-        //                                Console.WriteLine("Неправильный формат битового текста без пробелов");
-        //                                return "";
-        //                            }
-        //                        }
-        //                    }
-
-        //                    return outs;
-        //                }
-        //                else
-        //                {
-        //                    Console.WriteLine("Неправильная длина строки");
-        //                    return "";
-        //                }
-        //            }
-        //            else
-        //            {
-        //                Console.WriteLine("строка не задана");
-        //                return "";
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return s;
-        //        }
-        //    }
+        public class StringSymbol
+        {
+            public string RepCharacters(string s) // меняем специальные символы на заменяющие их
+            {
+                s = s.Replace("&", "&amp;");
+                s = s.Replace("<", "&lt;");
+                s = s.Replace(">", "&gt;");
+                s = s.Replace("\"", "&quot;");
+                return s;
+            }
 
 
 
-
-        //}
+             public string Characters(string s) // восттанавливаем специальные символы
+            {
+                s = s.Replace("&amp;", "&");
+                s = s.Replace("&lt;", "<");
+                s = s.Replace("&gt;", ">");
+                s = s.Replace("&quot;", "\"");
+                return s;
+            }
+        }
 
 
 
@@ -178,14 +102,14 @@ namespace SiberTest
             }
             public ListRead(ListNode Head, int count)
             {
-                Read(Head,count);
+                Read(Head, count);
             }
 
 
             public void Read(ListNode Head, int count)
             {
-                
-                for(; ; )
+
+                for (; ; )
                 {
                     if (count == 0)
                     {
@@ -234,7 +158,7 @@ namespace SiberTest
             }
 
 
-            public bool ListClose (ListNode Head, int count) // возвращает true ,если список замкнут
+            public bool ListClose(ListNode Head, int count) // возвращает true ,если список замкнут
             {
                 for (; ; )
                 {
@@ -256,7 +180,7 @@ namespace SiberTest
             }
 
 
-            public ListNode HeadEl (ListNode Head)  // возвращает родительский элемент из незамкнутого списка
+            public ListNode HeadEl(ListNode Head)  // возвращает родительский элемент из незамкнутого списка
             {
                 for (; ; )
                 {
@@ -289,6 +213,56 @@ namespace SiberTest
         }
 
 
+        //public class XmlAnalyzer
+        //{
+        //    public string RootElement(string s) // находим корневой элемент
+        //    {
+        //        // удаляем объявление xml
+        //        s = s.Remove(0, s.IndexOf("?>") + 1);
+
+        //        // ищем корневой элемент
+        //        int first;
+        //        int last;
+
+
+        //        foreach(char i in s.ToArray())
+        //        {
+        //        //    if(i=='')
+        //        }
+        //    }
+        //    public string Atributes(string s)// находим атрибуты элемента
+        //    {
+
+        //    }
+        //    public string[] ChildElements(string s)// находим дочерние элементы внутри узла
+        //    {
+
+        //    }
+        //}
+
+
+
+        public class RandomOb
+        {
+            public ListNode[] AddRandom(ListNode[] list, Number[] num) // добавляем рандомные объекты
+            {
+                foreach (Number i in num) // добавляем рандомные объекты элементам списка объекты
+                {
+                    if (i != null)
+                        list[i.element].Random = list[i.random];
+                }
+                return list;
+            }
+        }
+
+
+        public class Number // набор чисел элемнта и рандомного объекта
+        {
+            public int element;
+            public int random;
+        }
+
+
 
         public class ObjectToXml // преобразуем объекты в xml
         {
@@ -296,9 +270,10 @@ namespace SiberTest
             {
                 string[] list = new string[count];
                 string xml;
-                count=0;
+                count = 0;
                 ListRead listR = new ListRead();
-                for(; ; )
+                StringSymbol sb = new StringSymbol();
+                for (; ; )
                 {
                     if (Head.Data == null && Head.Random == null) // если свойство дата и рандом не заданы
                     {
@@ -315,22 +290,13 @@ namespace SiberTest
                     else
                     {
                         xml = "<Object ";
-                        if (Head.Data == null) // если не задано свойство дата
-                        {
-                            
-                        }
-                        else // если свойство дата задано, то вписываем его
-                        {
-                            xml = "<Object Data=\"" + Head.Data + "\" ";
-                        }
-                        if(Head.Random == null) // если рандомный элемент не задан
-                        {
 
-                        }
-                        else //если рандомный элемент задан, то задаём его номер
-                        {
+                        if (Head.Data != null) // если свойство дата задано, то вписываем его
+                            xml = "<Object Data=\"" + sb.RepCharacters(Head.Data) + "\" ";
+                        
+                        if (Head.Random != null) //если рандомный элемент задан, то задаём его номер
                             xml += "Random=\"" + listR.Number(Head.Random).ToString() + "\"";
-                        }
+                        
                         xml += "/>";
                         list[count] = xml;
                         if (Head.Next != null)
@@ -349,7 +315,71 @@ namespace SiberTest
 
         public class XmlToObject
         {
+            public string[] StrElem(string s) // возвращаем массив xml строк каждого элемента
+            {
+                int count = 0;
+                // находим количество элементов в разметке
+                foreach (char i in s.ToArray())
+                {
+                    if (i == '<')
+                        count++;
+                }
+                string[] obj = new string[count];
+                count = 0;
+                while (s.IndexOf("<") != -1) // пока элементы не закончились
+                {
+                    // находим элемент, добавляем в массив и удаляем
+                    obj[count] = s.Remove(s.IndexOf(">") + 1, s.Length - s.IndexOf(">") - 1); // добавляем первый элемент в массив
+                    s = s.Remove(0, s.IndexOf(">") + 1);// удаляем первый элемент
+                    count++;
+                }
+                return obj;
+            }
 
+
+            public ListNode[]Create(string[] obj)// Создаём объекты из массива строк xml
+            {
+                StringSymbol sb = new StringSymbol();
+                ListNode[] lis = new ListNode[obj.Length]; // массив объектов listNode
+                Number[] run = new Number[obj.Length]; // массив объектов с номерами элементов и произвольных объектов
+                int count = 0; // счётчик
+                string ob; // изменяемая строка для выделения значений свойств
+                foreach (string i in obj)
+                {
+                    if (i == null)
+                        continue;
+                    ListNode ln = new ListNode();
+                    if(count!=0)
+                    {
+                        lis[count - 1].Next = ln;
+                        ln.Previous = lis[count - 1];
+                    }
+
+                    if (i.IndexOf("Data=\"") != -1) // если задано свойство Data
+                    {
+                        ob = i.Remove(0, i.IndexOf("a=\"") + 3); // удаляем всё от первого символа до открывающейся кавычки включительно
+                        ob = ob.Remove(ob.IndexOf("\""), ob.Length - ob.IndexOf("\"")); // удаляем всё от последней(она же в текущей строке первая) кавычки до конца
+                        ln.Data = sb.Characters(ob); // 
+                    }
+                    if (i.IndexOf("Random=\"") != -1) // если задано свойство Random
+                    {
+                        ob = i.Remove(0, i.IndexOf("m=\"") + 3); // удаляем всё от первого символа до первой кавычки после random включительно
+                        ob = ob.Remove(ob.IndexOf("\""), ob.Length - ob.IndexOf("\"")); // удаляем всё от последней(она же в текущей строке первая) кавычки до конца
+                        Number num = new Number
+                        {
+                            element = count,
+                            random = Convert.ToInt32(ob)
+                        };
+                        run[count] = num;
+                    }
+                    lis[count] = ln;
+                    count++;
+                }
+                
+                RandomOb random = new RandomOb();
+                return random.AddRandom(lis, run);
+
+            }
         }
 
 
@@ -649,7 +679,7 @@ namespace SiberTest
         //            else
         //                return number;
         //        }
-                
+
         //    }
         //}
 
@@ -703,7 +733,7 @@ namespace SiberTest
                         Head = lr.HeadEl(Head);
                     }
 
-                    string bin = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>";
+                    string bin = "<?xml version=\"1.0\" encoding=\"utf-16\" ?>";
                     if (l) // если список замкнут, устанавливаем в битовой строке еденицу первым символом
                         bin += "<List Close =\"1\">";
                     else // в протвном случае - 0
@@ -711,7 +741,7 @@ namespace SiberTest
 
                     // добавляем дочерние элементы в список xml
                     ObjectToXml o = new ObjectToXml();
-                    foreach(string i in o.XmlString(Head,Count))
+                    foreach (string i in o.XmlString(Head, Count))
                     {
                         bin += i;
                     }
@@ -719,26 +749,25 @@ namespace SiberTest
                     // добавляем закрывающий тег корневого элемента
                     bin += "</List>";
 
-
                     // преобразуем битовый текст в байты
                     byte[] by = new byte[bin.Length];
-                        int count = 0;
-                        foreach (char i in bin)
-                        {
-                            by[count] = Convert.ToByte(i);
-                            count++;
-                        }
-                        using (stream)// записываем в файл
-                        {
+                    int count = 0;
+                    foreach (char i in bin)
+                    {
+                        by[count] = Convert.ToByte(i);
+                        count++;
+                    }
+                    using (stream)// записываем в файл
+                    {
 
-                            // запись массива байтов в файл
-                            stream.Write(by, 0, by.Length);
-                            
-                            Console.WriteLine("Текст записан в файл");
-                            Console.WriteLine();
-                            Console.WriteLine("-------------------------------------------------");
-                            Console.WriteLine();
-                        }
+                        // запись массива байтов в файл
+                        stream.Write(by, 0, by.Length);
+
+                        Console.WriteLine("Текст записан в файл");
+                        Console.WriteLine();
+                        Console.WriteLine("-------------------------------------------------");
+                        Console.WriteLine();
+                    }
                     //}
                     //else
                     //{
@@ -757,80 +786,72 @@ namespace SiberTest
 
 
 
-            //public void Deserialize(Stream stream)
-            //{
-            //    Head = null;
-            //    using (stream)
-            //    {
-            //        // преобразуем строку в байты
-            //        byte[] by = new byte[stream.Length];
-            //        // считываем данные
-            //        stream.Read(by, 0, by.Length);
+            public void Deserialize(Stream stream)
+            {
+                Head = null;
+                using (stream)
+                {
+                    // преобразуем строку в байты
+                    byte[] by = new byte[stream.Length];
+                    // считываем данные
+                    stream.Read(by, 0, by.Length);
 
-            //        if (by.Length != 0) // Если файл не пуст
-            //        {
-            //            try
-            //            {
-            //                // преобразуем байты в битовый текст
-            //                char[] cha = new char[by.Length];
-            //                int coun = 0;
-            //                foreach (byte i in by) // преобразуем байты в символы
-            //                {
-            //                    cha[coun] = Convert.ToChar(i);
-            //                    coun++;
-            //                }
+                    if (by.Length != 0) // Если файл не пуст
+                    {
+                        //try
+                        //{
+                            // преобразуем байты в битовый текст
+                            char[] cha = new char[by.Length];
+                            int coun = 0;
+                            foreach (byte i in by) // преобразуем байты в символы
+                            {
+                                cha[coun] = Convert.ToChar(i);
+                                coun++;
+                            }
 
-            //                string strbyte = "";
-            //                foreach (char i in cha) //преобразуем символы в битовый текст
-            //                {
-            //                    strbyte += i.ToString();
-            //                }
+                            string strbyte = "";
+                            foreach (char i in cha) //преобразуем символы в текст
+                            {
+                                strbyte += i.ToString();
+                            }
 
-                            
-            //                string strclose = strbyte.Remove(1); // присваеваем строке первый элемент из битового текста без пробелов
-            //                strbyte = strbyte.Substring(1); // удаляем из текста первый элемент
+                            strbyte = strbyte.Remove(0, strbyte.IndexOf("?>")+2); //удаляем объявление xml
+                            string strclose = strbyte.Remove(0, strbyte.IndexOf("\"") + 1);// выделяем свойство Close ,которое указывает, замкнут ли список
+                            strclose = strclose.Remove(strclose.IndexOf("\""), strclose.Length - strclose.IndexOf("\""));
+                            strbyte = strbyte.Remove(0, strbyte.IndexOf(">")+1); // удаляем родительский элемент из разметки вначале
+                            strbyte = strbyte.Remove(strbyte.LastIndexOf("<"), strbyte.Length - strbyte.LastIndexOf("<")); // удаляем родительский элемент вконце разметки
 
-            //                // преобразуем битовую строку в битовую строку с пробелами
-            //                BinSpacing bs = new BinSpacing();
-            //                strbyte = bs.WithSpa(strbyte);
-            //                if (strbyte.IndexOf("1") != -1 && strbyte.IndexOf("0") != -1)
-            //                {
-
-            //                    // делим битовый текст на битовые строки текста
-            //                    CreateList create = new CreateList();
-            //                    StringBit sb = new StringBit();
-
-            //                    List<ListNode> list = create.Create(sb.DivideText(strbyte)); // создаём двусвязный список из строк
-            //                    Console.WriteLine("Список восстановлен!");
-            //                    Console.WriteLine();
-            //                    Head = list[0];
-            //                    Tail = list[list.Count - 1];
-            //                    Count = list.Count;
-            //                    if (strclose == "1") // если вначале текста была еденица, то список замкнут.делаем связь между первым и последним элементом
-            //                    {
-            //                        Head.Previous = Tail;
-            //                        Tail.Next = Head;
-            //                        Console.WriteLine("Список замкнут");
-            //                        Console.WriteLine();
-            //                    }
-                                
-            //                }
-            //                else
-            //                {
-            //                    Console.WriteLine("Битовый текст не содержит нужных символов");
-            //                }
-            //            }
-            //            catch
-            //            {
-            //                Console.WriteLine("Некорректный текст файла1");
-            //            }
-            //        }
-            //        else
-            //        {
-            //            Console.WriteLine("Файл пуст!");
-            //        }
-            //    }
-            //}
+                            // создаём двусвязный список из строк
+                            XmlToObject xml = new XmlToObject();
+                            ListNode[] list = xml.Create(xml.StrElem(strbyte));
+                            Console.WriteLine("Список восстановлен!");
+                            Console.WriteLine();
+                         Head = list[0];                            
+                            Tail = Head;
+                        while (Tail.Next != null)
+                            Tail = Tail.Next;
+                        Console.WriteLine(Tail.Data);
+                       // Tail = Tail.Next;
+                            Count = list.Length;
+                            if (strclose == "1") // если вначале текста была еденица, то список замкнут.делаем связь между первым и последним элементом
+                            {
+                                Head.Previous = Tail;
+                                Tail.Next = Head;
+                               // Console.WriteLine("Список замкнут");
+                                //Console.WriteLine();
+                            }
+                        //}
+                        //catch
+                        //{
+                        //    Console.WriteLine("Некорректный текст файла1");
+                        //}
+                    }
+                    else
+                    {
+                        Console.WriteLine("Файл пуст!");
+                    }
+                }
+            }
         }
 
 
@@ -840,11 +861,11 @@ namespace SiberTest
         {
             // создаем коллекцию двусвязного списка
             ListNode ln = new ListNode { Data = "Gena" };
-            ListNode ln1 = new ListNode { Data = "Petya Rogov" };
+            ListNode ln1 = new ListNode { Data = "<Petya Rogov>" };
             ListNode ln2 = new ListNode { Data = "Vasya" };
             ListNode ln3 = new ListNode();
             ListNode ln4 = new ListNode { Random = ln1 };
-            ListNode ln5 = new ListNode { Previous = ln4, Data = "Goba"  };
+            ListNode ln5 = new ListNode { Previous = ln4, Data = "Goba\"" };
             ln.Next = ln1;
             ln.Random = ln2;
 
@@ -880,7 +901,7 @@ namespace SiberTest
             Console.WriteLine("Созданный список:");
             Console.WriteLine();
 
-            ListRead listr = new ListRead(lr.Head,lr.Count);
+            ListRead listr = new ListRead(lr.Head, lr.Count);
             // создаем каталог для файла
             string path = @"C:\New";
             DirectoryInfo dirInfo = new DirectoryInfo(path);
@@ -889,23 +910,22 @@ namespace SiberTest
                 dirInfo.Create();
             }
 
-
             ListRandom lr1 = new ListRandom();
-            try
-            {
+            //try
+            //{
                 FileStream stream = new FileStream(@$"{path}\note.xml", FileMode.Create);
                 lr.Serialize(stream);
-               // FileStream stream1 = File.OpenRead(@$"{path}\note.txt");
-               // lr1.Deserialize(stream1);
-            }
-            catch
-            {
-                Console.WriteLine("Проблема с потоком, файл невозможно создать/записать/прочитать");
-            }
-            
+                FileStream stream1 = File.OpenRead(@$"{path}\note.xml");
+                lr1.Deserialize(stream1);
+            //}
+            //catch
+            //{
+            //    Console.WriteLine("Проблема с потоком, файл невозможно создать/записать/прочитать");
+            //}
+
             // чтение списка
 
-            //ListRead lisR = new ListRead(lr1.Head,lr1.Count);
+            _ = new ListRead(lr1.Head, lr1.Count);
 
         }
     }
