@@ -9,68 +9,68 @@ namespace SiberTest
 
 
     /// <summary>
-    /// Программа сериализует двусвязный список в бинарный текст без пробелов
-    /// Стандартных средств сериализации (в том числе Encoding)  не использовалось
+    /// Программа сериализует двусвязный список в xml разметку.
+    /// Исходный файл сериализации стандартизирован под xml, поэтому его можно прочитать стандартными средствами десериализации .NET
     /// Учитываются следующиие варианты:
     /// 1.Рандомный элемент и строковое представление объекта не заданы
     /// 2.Рандомный элемент не задан
     /// 3.Строковое представление не задано
-    /// 4.Если свойство Data="" или = null ,то после десериализации Data=null
+    /// 4.Если свойство Data="",то вернётся "" .Если Data = null ,то после десериализации Data=null
     /// 5.Последний и первый элемент связаны между собой(Список замкнут)
     /// 6.Последний и первый элемент не знают друг о друге 
     /// 7.В незамкнутом списке неправильно задан родительский элемент(Программа не будет выдавать ошибку и сама найдёт родительский элемент)
-    /// Неверно заданый бинарный текст(Пустой текст или не содержащий пробелы, пустой и т.д. выдаст ошибку)
     /// </summary>
     class Program
     {
 
 
-        public class EncodingString
-        {
-            public string StringToUTF(string s) // из юникода в utf-8
-            {
-                Encoding utf = Encoding.UTF8;
-                Encoding unicode = Encoding.Unicode;
+        //public class EncodingString
+        //{
+        //    public string StringToUTF(string s) // из юникода в utf-8
+        //    {
+        //        Encoding utf = Encoding.UTF8;
+        //        Encoding unicode = Encoding.Unicode;
 
-                // Convert the string into a byte array.
-                byte[] unicodeBytes = unicode.GetBytes(s);
+        //        // Convert the string into a byte array.
+        //        byte[] unicodeBytes = unicode.GetBytes(s);
 
-                // Perform the conversion from one encoding to the other.
-                byte[] asciiBytes = Encoding.Convert(unicode, utf, unicodeBytes);
+        //        // Perform the conversion from one encoding to the other.
+        //        byte[] asciiBytes = Encoding.Convert(unicode, utf, unicodeBytes);
 
-                // Convert the new byte[] into a char[] and then into a string.
-                char[] asciiChars = new char[utf.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
-                utf.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
-                s = new string(asciiChars);
-                Console.WriteLine(s);
-                return s;
-            }
+        //        // Convert the new byte[] into a char[] and then into a string.
+        //        char[] asciiChars = new char[utf.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
+        //        utf.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
+        //        s = new string(asciiChars);
+        //        Console.WriteLine(s);
+        //        return s;
+        //    }
 
 
-            public string UTFToString(string s) // из utf-8 в юникод
-            {
-                Encoding utf = Encoding.UTF8;
-                Encoding unicode = Encoding.Unicode;
+        //    public string UTFToString(string s) // из utf-8 в юникод
+        //    {
+        //        Encoding utf = Encoding.UTF8;
+        //        Encoding unicode = Encoding.Unicode;
 
-                // Convert the string into a byte array.
-                byte[] unicodeBytes = utf.GetBytes(s);
+        //        // Convert the string into a byte array.
+        //        byte[] unicodeBytes = utf.GetBytes(s);
 
-                // Perform the conversion from one encoding to the other.
-                byte[] asciiBytes = Encoding.Convert(utf, unicode, unicodeBytes);
+        //        // Perform the conversion from one encoding to the other.
+        //        byte[] asciiBytes = Encoding.Convert(utf, unicode, unicodeBytes);
 
-                // Convert the new byte[] into a char[] and then into a string.
-                char[] asciiChars = new char[utf.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
-                unicode.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
-                s = new string(asciiChars);
-                Console.WriteLine(s);
-                return s;
-            }
-        }
+        //        // Convert the new byte[] into a char[] and then into a string.
+        //        char[] asciiChars = new char[utf.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
+        //        unicode.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
+        //        s = new string(asciiChars);
+        //        Console.WriteLine(s);
+        //        return s;
+        //    }
+        //}
 
 
 
         public class StringSymbol
         {
+
             public string RepCharacters(string s) // меняем специальные символы на заменяющие их
             {
                 s = s.Replace("&", "&amp;");
@@ -393,14 +393,9 @@ namespace SiberTest
                     // добавляем закрывающий тег корневого элемента
                     bin += "</List>";
 
-                    // преобразуем битовый текст в байты
-                    byte[] by = new byte[bin.Length];
-                    int count = 0;
-                    foreach (char i in bin)
-                    {
-                        by[count] = Convert.ToByte(i);
-                        count++;
-                    }
+                    // преобразуем текст в байты
+                    byte[] by = System.Text.Encoding.Default.GetBytes(bin);
+
                     using (stream)// записываем в файл
                     {
                         // запись массива байтов в файл
@@ -437,60 +432,40 @@ namespace SiberTest
 
                     if (by.Length != 0) // Если файл не пуст
                     {
-                        //try
-                        //{
-
-
-
-
-                        // преобразуем байты в текст
-                        char[] cha = new char[by.Length];
-                        int coun = 0;
-                        foreach (byte i in by) // преобразуем байты в символы
+                        try
                         {
-                            cha[coun] = Convert.ToChar(i);
-                            coun++;
-                        }
 
-                        string strbyte = "";
-                        foreach (char i in cha) //преобразуем символы в текст
-                        {
-                            strbyte += i.ToString();
-                        }
+                            string strbyte = "";
+                            strbyte = System.Text.Encoding.Default.GetString(by);
 
-                        strbyte = strbyte.Remove(0, strbyte.IndexOf("?>") + 2); //удаляем объявление xml
-                        string strclose = strbyte.Remove(0, strbyte.IndexOf("\"") + 1);// выделяем свойство Close ,которое указывает, замкнут ли список
-                        strclose = strclose.Remove(strclose.IndexOf("\""), strclose.Length - strclose.IndexOf("\""));
-                        strbyte = strbyte.Remove(0, strbyte.IndexOf(">") + 1); // удаляем родительский элемент из разметки вначале
-                        strbyte = strbyte.Remove(strbyte.LastIndexOf("<"), strbyte.Length - strbyte.LastIndexOf("<")); // удаляем родительский элемент вконце разметки
+                            strbyte = strbyte.Remove(0, strbyte.IndexOf("?>") + 2); //удаляем объявление xml
+                            string strclose = strbyte.Remove(0, strbyte.IndexOf("\"") + 1);// выделяем свойство Close ,которое указывает, замкнут ли список
+                            strclose = strclose.Remove(strclose.IndexOf("\""), strclose.Length - strclose.IndexOf("\""));
+                            strbyte = strbyte.Remove(0, strbyte.IndexOf(">") + 1); // удаляем родительский элемент из разметки вначале
+                            strbyte = strbyte.Remove(strbyte.LastIndexOf("<"), strbyte.Length - strbyte.LastIndexOf("<")); // удаляем родительский элемент вконце разметки
 
-
-
-
-
-
-                        // создаём двусвязный список из строк
-                        XmlToObject xml = new XmlToObject();
-                        ListNode[] list = xml.Create(xml.StrElem(strbyte));
-                        Console.WriteLine("Список восстановлен!");
-                        Console.WriteLine();
-
-                        Head = list[0];
-                        Tail = list[^1];
-                        Count = list.Length;
-
-                        if (strclose == "1") // если вначале текста была еденица, то список замкнут.делаем связь между первым и последним элементом
-                        {
-                            Head.Previous = Tail;
-                            Tail.Next = Head;
-                            Console.WriteLine("Список замкнут");
+                            // создаём двусвязный список из строк
+                            XmlToObject xml = new XmlToObject();
+                            ListNode[] list = xml.Create(xml.StrElem(strbyte));
+                            Console.WriteLine("Список восстановлен!");
                             Console.WriteLine();
+
+                            Head = list[0];
+                            Tail = list[^1];
+                            Count = list.Length;
+
+                            if (strclose == "1") // если вначале текста была еденица, то список замкнут.делаем связь между первым и последним элементом
+                            {
+                                Head.Previous = Tail;
+                                Tail.Next = Head;
+                                Console.WriteLine("Список замкнут");
+                                Console.WriteLine();
+                            }
                         }
-                        //}
-                        //catch
-                        //{
-                        //    Console.WriteLine("Некорректный текст файла1");
-                        //}
+                        catch
+                        {
+                            Console.WriteLine("Некорректный текст файла1");
+                        }
                     }
                     else
                     {
@@ -507,7 +482,7 @@ namespace SiberTest
         {
             // создаем коллекцию двусвязного списка
             ListNode ln = new ListNode { Data = "Gena" };
-            ListNode ln1 = new ListNode { Data = "<Petya Rogov>" };
+            ListNode ln1 = new ListNode { Data = "<Petya RogovЁ>" };
             ListNode ln2 = new ListNode { Data = "Vasya" };
             ListNode ln3 = new ListNode();
             ListNode ln4 = new ListNode { Random = ln1 };
