@@ -1,16 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace SiberTest
 {
 
-
     /// <summary>
     /// Программа сериализует двусвязный список в xml разметку.
     /// Исходный файл сериализации стандартизирован под xml, поэтому его можно прочитать стандартными средствами десериализации .NET
+    /// 
+    /// Сериализация\Десериализация за O(n^2), как сделать её за O(n) - не знаю, судя по всему нужно хранить рандомный элемент не по номеру в списке,
+    /// но в таком случае ,при повторяющихся последовательностях объектов, возможна десериализация не того объекта в рандомный элемент.
+    /// 
+    /// Не используются: рекурсивные методы, списки, изменение размеров массива
+    /// 
     /// Учитываются следующиие варианты:
     /// 1.Рандомный элемент и строковое представление объекта не заданы
     /// 2.Рандомный элемент не задан
@@ -19,54 +22,13 @@ namespace SiberTest
     /// 5.Последний и первый элемент связаны между собой(Список замкнут)
     /// 6.Последний и первый элемент не знают друг о друге 
     /// 7.В незамкнутом списке неправильно задан родительский элемент(Программа не будет выдавать ошибку и сама найдёт родительский элемент)
-    /// </summary>
+    /// </summary> 
+
+
+
+
     class Program
     {
-
-
-        //public class EncodingString
-        //{
-        //    public string StringToUTF(string s) // из юникода в utf-8
-        //    {
-        //        Encoding utf = Encoding.UTF8;
-        //        Encoding unicode = Encoding.Unicode;
-
-        //        // Convert the string into a byte array.
-        //        byte[] unicodeBytes = unicode.GetBytes(s);
-
-        //        // Perform the conversion from one encoding to the other.
-        //        byte[] asciiBytes = Encoding.Convert(unicode, utf, unicodeBytes);
-
-        //        // Convert the new byte[] into a char[] and then into a string.
-        //        char[] asciiChars = new char[utf.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
-        //        utf.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
-        //        s = new string(asciiChars);
-        //        Console.WriteLine(s);
-        //        return s;
-        //    }
-
-
-        //    public string UTFToString(string s) // из utf-8 в юникод
-        //    {
-        //        Encoding utf = Encoding.UTF8;
-        //        Encoding unicode = Encoding.Unicode;
-
-        //        // Convert the string into a byte array.
-        //        byte[] unicodeBytes = utf.GetBytes(s);
-
-        //        // Perform the conversion from one encoding to the other.
-        //        byte[] asciiBytes = Encoding.Convert(utf, unicode, unicodeBytes);
-
-        //        // Convert the new byte[] into a char[] and then into a string.
-        //        char[] asciiChars = new char[utf.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
-        //        unicode.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
-        //        s = new string(asciiChars);
-        //        Console.WriteLine(s);
-        //        return s;
-        //    }
-        //}
-
-
 
         public class StringSymbol
         {
@@ -203,8 +165,9 @@ namespace SiberTest
             {
                 foreach (Number i in num) // добавляем рандомные объекты элементам списка объекты
                 {
-                    if (i != null)
-                        list[i.element].Random = list[i.random];
+                    if (i == null)
+                        return list;
+                    list[i.element].Random = list[i.random];
                 }
                 return list;
             }
@@ -298,7 +261,8 @@ namespace SiberTest
                 StringSymbol sb = new StringSymbol();
                 ListNode[] lis = new ListNode[obj.Length]; // массив объектов listNode
                 Number[] run = new Number[obj.Length]; // массив объектов с номерами элементов и произвольных объектов
-                int count = 0; // счётчик
+                int count = 0; // счётчик элементов
+                int coun = 0;
                 string ob; // изменяемая строка для выделения значений свойств
                 foreach (string i in obj)
                 {
@@ -324,7 +288,8 @@ namespace SiberTest
                             element = count,
                             random = Convert.ToInt32(ob)
                         };
-                        run[count] = num;
+                        run[coun] = num;
+                        coun++;
                     }
                     lis[count] = ln;
                     count++;
@@ -434,9 +399,7 @@ namespace SiberTest
                     {
                         try
                         {
-
-                            string strbyte = "";
-                            strbyte = System.Text.Encoding.Default.GetString(by);
+                            string strbyte = System.Text.Encoding.Default.GetString(by);
 
                             strbyte = strbyte.Remove(0, strbyte.IndexOf("?>") + 2); //удаляем объявление xml
                             string strclose = strbyte.Remove(0, strbyte.IndexOf("\"") + 1);// выделяем свойство Close ,которое указывает, замкнут ли список
@@ -447,6 +410,7 @@ namespace SiberTest
                             // создаём двусвязный список из строк
                             XmlToObject xml = new XmlToObject();
                             ListNode[] list = xml.Create(xml.StrElem(strbyte));
+
                             Console.WriteLine("Список восстановлен!");
                             Console.WriteLine();
 
