@@ -9,8 +9,8 @@ namespace SiberTest
     /// Программа сериализует двусвязный список в xml разметку.
     /// Исходный файл сериализации стандартизирован под xml, поэтому его можно прочитать стандартными средствами десериализации .NET
     /// 
-    /// Сериализация\Десериализация за O(n^2), как сделать её за O(n) - не знаю, судя по всему нужно хранить рандомный элемент не по номеру в списке,
-    /// но в таком случае ,при повторяющихся последовательностях объектов, возможна десериализация не того объекта в рандомный элемент.
+    /// Сериализация\Десериализация за O(n) за счёт добавления в ListNode поля 'int Number' содержащий номер элемента и последующем заданием номеров,
+    /// что так же можно сделать с помощью класса имеющем те же поля и дополнительное поле int.
     /// 
     /// Не используются: рекурсивные методы, списки, изменение размеров массива
     /// 
@@ -140,21 +140,21 @@ namespace SiberTest
             }
 
 
-            public int Number(ListNode list) // номер объекта в списке отсчитывамый от нуля
-            {
-                int number = 0;
-                for (; ; )
-                {
-                    if (list.Previous != null)
-                    {
-                        number++;
-                        list = list.Previous;
-                    }
-                    else
-                        return number;
-                }
+            //public int Number(ListNode list) // номер объекта в списке отсчитывамый от нуля
+            //{
+            //    int number = 0;
+            //    for (; ; )
+            //    {
+            //        if (list.Previous != null)
+            //        {
+            //            number++;
+            //            list = list.Previous;
+            //        }
+            //        else
+            //            return number;
+            //    }
 
-            }
+            //}
 
         }
 
@@ -189,7 +189,6 @@ namespace SiberTest
                 string[] list = new string[count];
                 string xml;
                 count = 0;
-                ListRead listR = new ListRead();
                 StringSymbol sb = new StringSymbol();
                 for (; ; )
                 {
@@ -213,7 +212,7 @@ namespace SiberTest
                             xml = "<Object Data=\"" + sb.RepCharacters(Head.Data) + "\" ";
 
                         if (Head.Random != null) //если рандомный элемент задан, то задаём его номер
-                            xml += "Random=\"" + listR.Number(Head.Random).ToString() + "\"";
+                            xml += "Random=\"" + Head.Random.Number.ToString() + "\"";
 
                         xml += "/>";
                         list[count] = xml;
@@ -309,6 +308,7 @@ namespace SiberTest
             public ListNode Next;
             public ListNode Random; // произвольный элемент внутри списка
             public string Data;
+            public int Number; // номер элемента, отсчитываемый от нуля
         }
 
 
@@ -347,6 +347,17 @@ namespace SiberTest
                         Head = lr.HeadEl(Head);
                         bin += "<List Close =\"0\">";
                     }
+
+                    // номеруем элементы списка
+                    ListNode lis = Head;
+                    int count = 0;
+                    while(lis.Next!=null)
+                    {
+                        lis.Number = count;
+                        lis = lis.Next;
+                        count++;
+                    }
+                    lis.Number = count;
 
                     // добавляем дочерние элементы в список xml
                     ObjectToXml o = new ObjectToXml();
@@ -400,7 +411,7 @@ namespace SiberTest
                         try
                         {
                             string strbyte = System.Text.Encoding.Default.GetString(by);
-
+                            // очищаем файл разметки
                             strbyte = strbyte.Remove(0, strbyte.IndexOf("?>") + 2); //удаляем объявление xml
                             string strclose = strbyte.Remove(0, strbyte.IndexOf("\"") + 1);// выделяем свойство Close ,которое указывает, замкнут ли список
                             strclose = strclose.Remove(strclose.IndexOf("\""), strclose.Length - strclose.IndexOf("\""));
