@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using SerializeXmlString;
+using DeserializeXmlString;
+
 
 namespace SiberTest
 {
@@ -25,434 +28,240 @@ namespace SiberTest
     /// </summary> 
 
 
-
-
-    class Program
+    public class ListRead
     {
+        public ListRandom Random { get; private set; }
+        public string Close { get; private set; }
 
-        public class StringSymbol
+
+
+        public ListRead(ListRandom random)
         {
-
-            public string RepCharacters(string s) // меняем специальные символы на заменяющие их
-            {
-                s = s.Replace("&", "&amp;");
-                s = s.Replace("<", "&lt;");
-                s = s.Replace(">", "&gt;");
-                s = s.Replace("\"", "&quot;");
-                return s;
-            }
-
-
-
-            public string Characters(string s) // восттанавливаем специальные символы
-            {
-                s = s.Replace("&amp;", "&");
-                s = s.Replace("&lt;", "<");
-                s = s.Replace("&gt;", ">");
-                s = s.Replace("&quot;", "\"");
-                return s;
-            }
+            Random = random;
         }
 
 
 
-        public class ListRead
+        public void Read()//чтение списка
         {
-            public ListRead()
+            int count = Random.Count;
+
+            while (count != 0)
             {
-
-            }
-            public ListRead(ListNode Head, int count)
-            {
-                Read(Head, count);
-            }
-
-
-            public void Read(ListNode Head, int count)
-            {
-
-                while (count != 0)
+                Console.WriteLine("Element:" + Random.Head.Data);
+                Console.Write("Родительский элемент:");
+                if (Random.Head.Previous != null)
+                    Console.WriteLine(Random.Head.Previous.Data);
+                else
                 {
-                    Console.WriteLine("Element:" + Head.Data);
-                    Console.Write("Родительский элемент:");
-                    if (Head.Previous != null)
-                        Console.WriteLine(Head.Previous.Data);
-                    else
-                    {
-                        Console.WriteLine();
-                    }
-
-                    Console.Write("Рандомный элемент:");
-                    if (Head.Random != null)
-                        Console.WriteLine(Head.Random.Data);
-                    else
-                    {
-                        Console.WriteLine();
-                    }
-
-                    Console.Write("Следующий элемент:");
-                    if (Head.Next != null)
-                        Console.WriteLine(Head.Next.Data);
-                    else
-                    {
-                        Console.WriteLine();
-                    }
                     Console.WriteLine();
+                }
+
+                Console.Write("Рандомный элемент:");
+                if (Random.Head.Random != null)
+                    Console.WriteLine(Random.Head.Random.Data);
+                else
+                {
                     Console.WriteLine();
-
-                    Head = Head.Next;
-                    count--;
                 }
-            }
 
-
-            public bool ListClose(ListNode Head, int count) // возвращает true ,если список замкнут
-            {
-                for (; ; )
+                Console.Write("Следующий элемент:");
+                if (Random.Head.Next != null)
+                    Console.WriteLine(Random.Head.Next.Data);
+                else
                 {
-                    if (count == 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        if (Head.Previous == null)
-                            return false;
-                        else
-                        {
-                            Head = Head.Previous;
-                            count--;
-                        }
-                    }
+                    Console.WriteLine();
                 }
-            }
+                Console.WriteLine();
+                Console.WriteLine();
 
-
-            public ListNode HeadEl(ListNode Head)  // возвращает родительский элемент из незамкнутого списка
-            {
-                for (; ; )
-                {
-                    if (Head.Previous == null)
-                        return Head;
-                    else
-                        Head = Head.Previous;
-                }
-            }
-
-
-            //public int Number(ListNode list) // номер объекта в списке отсчитывамый от нуля
-            //{
-            //    int number = 0;
-            //    for (; ; )
-            //    {
-            //        if (list.Previous != null)
-            //        {
-            //            number++;
-            //            list = list.Previous;
-            //        }
-            //        else
-            //            return number;
-            //    }
-
-            //}
-
-        }
-
-
-        public class RandomOb
-        {
-            public ListNode[] AddRandom(ListNode[] list, Number[] num) // добавляем рандомные объекты
-            {
-                foreach (Number i in num) // добавляем рандомные объекты элементам списка объекты
-                {
-                    if (i == null)
-                        return list;
-                    list[i.element].Random = list[i.random];
-                }
-                return list;
+                Random.Head = Random.Head.Next;
+                count--;
             }
         }
 
 
-        public class Number // набор чисел элемнта и рандомного объекта
+        public void ListClose() // возвращает true ,если список замкнут
         {
-            public int element;
-            public int random;
-        }
+            int count = Random.Count;
 
-
-
-        public class ObjectToXml // преобразуем объекты в xml
-        {
-            public string[] XmlString(ListNode Head, int count) // преобразуем объекты в массив строк xml
+            while (Random.Head.Previous != null)
             {
-                string[] list = new string[count];
-                string xml;
-                count = 0;
-                StringSymbol sb = new StringSymbol();
-                for (; ; )
+                if (count == 0)
                 {
-                    if (Head.Data == null && Head.Random == null) // если свойство дата и рандом не заданы
-                    {
-                        xml = "<Object/>";
-                        list[count] = xml;
-                        if (Head.Next != null)
-                        {
-                            count++;
-                            Head = Head.Next;
-                        }
-                        else
-                            return list;
-                    }
-                    else
-                    {
-                        xml = "<Object ";
-
-                        if (Head.Data != null) // если свойство дата задано, то вписываем его
-                            xml = "<Object Data=\"" + sb.RepCharacters(Head.Data) + "\" ";
-
-                        if (Head.Random != null) //если рандомный элемент задан, то задаём его номер
-                            xml += "Random=\"" + Head.Random.Number.ToString() + "\"";
-
-                        xml += "/>";
-                        list[count] = xml;
-
-                        if (Head.Next != null)
-                        {
-                            count++;
-                            Head = Head.Next;
-                        }
-                        else
-                            return list;
-                    }
-                }
-            }
-        }
-
-
-
-        public class XmlToObject
-        {
-            public string[] StrElem(string s) // возвращаем массив xml строк каждого элемента
-            {
-                int count = 0;
-                // находим количество элементов в разметке
-                foreach (char i in s.ToArray())
-                {
-                    if (i == '<')
-                        count++;
-                }
-                string[] obj = new string[count];
-                count = 0;
-                while (s.IndexOf("<") != -1) // пока элементы не закончились
-                {
-                    // находим элемент, добавляем в массив и удаляем
-                    obj[count] = s.Remove(s.IndexOf(">") + 1, s.Length - s.IndexOf(">") - 1); // добавляем первый элемент в массив
-                    s = s.Remove(0, s.IndexOf(">") + 1);// удаляем первый элемент
-                    count++;
-                }
-                return obj;
-            }
-
-
-            public ListNode[] Create(string[] obj)// Создаём объекты из массива строк xml
-            {
-                StringSymbol sb = new StringSymbol();
-                ListNode[] lis = new ListNode[obj.Length]; // массив объектов listNode
-                Number[] run = new Number[obj.Length]; // массив объектов с номерами элементов и произвольных объектов
-                int count = 0; // счётчик элементов
-                int coun = 0;
-                string ob; // изменяемая строка для выделения значений свойств
-                foreach (string i in obj)
-                {
-                    ListNode ln = new ListNode();
-                    if (count != 0)
-                    {
-                        lis[count - 1].Next = ln;
-                        ln.Previous = lis[count - 1];
-                    }
-
-                    if (i.IndexOf("Data=\"") != -1) // если задано свойство Data
-                    {
-                        ob = i.Remove(0, i.IndexOf("a=\"") + 3); // удаляем всё от первого символа до открывающейся кавычки включительно
-                        ob = ob.Remove(ob.IndexOf("\""), ob.Length - ob.IndexOf("\"")); // удаляем всё от последней(она же в текущей строке первая) кавычки до конца
-                        ln.Data = sb.Characters(ob); // 
-                    }
-                    if (i.IndexOf("Random=\"") != -1) // если задано свойство Random
-                    {
-                        ob = i.Remove(0, i.IndexOf("m=\"") + 3); // удаляем всё от первого символа до первой кавычки после random включительно
-                        ob = ob.Remove(ob.IndexOf("\""), ob.Length - ob.IndexOf("\"")); // удаляем всё от последней(она же в текущей строке первая) кавычки до конца
-                        Number num = new Number
-                        {
-                            element = count,
-                            random = Convert.ToInt32(ob)
-                        };
-                        run[coun] = num;
-                        coun++;
-                    }
-                    lis[count] = ln;
-                    count++;
-                }
-
-                RandomOb random = new RandomOb();
-                return random.AddRandom(lis, run);
-
-            }
-        }
-
-
-
-        public class ListNode
-        {
-            public ListNode Previous;
-            public ListNode Next;
-            public ListNode Random; // произвольный элемент внутри списка
-            public string Data;
-            public int Number; // номер элемента, отсчитываемый от нуля
-        }
-
-
-
-
-        public class ListRandom
-        {
-
-
-            public ListNode Head;
-            public ListNode Tail;
-            public int Count;  // всего объектов в списке
-
-
-
-
-
-
-            public void Serialize(Stream stream)
-            {
-                if (Head != null)
-                {
-                    string bin = "<?xml version=\"1.0\" encoding=\"utf-16\" ?>";
-                    //если список замкнут, то разрываем последний элемент списка с первым
-                    ListRead lr = new ListRead();
-                    if (lr.ListClose(Head, Count))
-                    {
-                        Console.WriteLine("Список является замкнутым!");
-                        Head.Previous.Next = null;
-                        Head.Previous = null;
-                        bin += "<List Close =\"1\">";
-                    }
-                    else // Если список не замкнут, то находим родительский элемент списка(Если случайно задан не родительский)
-                    {
-                        Console.WriteLine("Cписок не замкнут");
-                        Head = lr.HeadEl(Head);
-                        bin += "<List Close =\"0\">";
-                    }
-
-                    // номеруем элементы списка
-                    ListNode lis = Head;
-                    int count = 0;
-                    while(lis.Next!=null)
-                    {
-                        lis.Number = count;
-                        lis = lis.Next;
-                        count++;
-                    }
-                    lis.Number = count;
-
-                    // добавляем дочерние элементы в список xml
-                    ObjectToXml o = new ObjectToXml();
-                    foreach (string i in o.XmlString(Head, Count))
-                    {
-                        bin += i;
-                    }
-
-                    // добавляем закрывающий тег корневого элемента
-                    bin += "</List>";
-
-                    // преобразуем текст в байты
-                    byte[] by = System.Text.Encoding.Default.GetBytes(bin);
-
-                    using (stream)// записываем в файл
-                    {
-                        // запись массива байтов в файл
-                        stream.Write(by, 0, by.Length);
-
-                        Console.WriteLine("Текст записан в файл");
-                        Console.WriteLine();
-                        Console.WriteLine("-------------------------------------------------");
-                        Console.WriteLine();
-                    }
-
+                    Close = "1";
+                    return;
                 }
                 else
                 {
-                    Console.WriteLine("Нет заданного списка");
+                    Random.Head = Random.Head.Previous;
+                    count--;
                 }
             }
+            Close = "0";
+        }
 
 
-
-
-
-
-
-            public void Deserialize(Stream stream)
+        public void HeadEl()  // возвращает родительский элемент из незамкнутого списка
+        {
+            for (; ; )
             {
-                Head = null;
-                using (stream)
+                if (Random.Head.Previous == null)
+                    return;
+                else
+                    Random.Head = Random.Head.Previous;
+            }
+        }
+
+
+        //public int Number(ListNode list) // номер объекта в списке отсчитывамый от нуля
+        //{
+        //    int number = 0;
+        //    for (; ; )
+        //    {
+        //        if (list.Previous != null)
+        //        {
+        //            number++;
+        //            list = list.Previous;
+        //        }
+        //        else
+        //            return number;
+        //    }
+
+        //}
+
+    }
+
+    public class StringSymbol
+    {
+
+        public string Symbol { get; private set; }
+
+
+
+        public void RepCharacters(string s) // меняем специальные символы на заменяющие их
+        {
+            s = s.Replace("&", "&amp;");
+            s = s.Replace("<", "&lt;");
+            s = s.Replace(">", "&gt;");
+            s = s.Replace("\"", "&quot;");
+            Symbol = s;
+        }
+
+
+
+        public void Characters(string s) // восттанавливаем специальные символы
+        {
+            s = s.Replace("&amp;", "&");
+            s = s.Replace("&lt;", "<");
+            s = s.Replace("&gt;", ">");
+            s = s.Replace("&quot;", "\"");
+            Symbol = s;
+        }
+    }
+
+
+    public class ListNode
+    {
+        public ListNode Previous;
+        public ListNode Next;
+        public ListNode Random; // произвольный элемент внутри списка
+        public string Data;
+        public int Number; // номер элемента, отсчитываемый от нуля
+    }
+
+    public class ListRandom
+    {
+
+
+        public ListNode Head;
+        public ListNode Tail;
+        public int Count;  // всего объектов в списке
+
+
+
+
+
+
+        public void Serialize(Stream stream)
+        {
+            if (Head != null)
+            {
+                // подготовка списка
+                PrepListNode prepListNode = new PrepListNode(this);
+                prepListNode.Preparation();
+
+                // созаём строку формата Xml
+                CreateXmlDocument createXmlString = new CreateXmlDocument(this, prepListNode.ListRead.Close);
+                createXmlString.CreateXml();
+
+                // преобразуем текст в байты
+                byte[] by = System.Text.Encoding.Default.GetBytes(createXmlString.XmlString);
+
+                using (stream)// записываем в файл
                 {
-                    // преобразуем строку в байты
-                    byte[] by = new byte[stream.Length];
-                    // считываем данные
-                    stream.Read(by, 0, by.Length);
+                    // запись массива байтов в файл
+                    stream.Write(by, 0, by.Length);
 
-                    if (by.Length != 0) // Если файл не пуст
-                    {
-                        try
-                        {
-                            string strbyte = System.Text.Encoding.Default.GetString(by);
-                            // очищаем файл разметки
-                            strbyte = strbyte.Remove(0, strbyte.IndexOf("?>") + 2); //удаляем объявление xml
-                            string strclose = strbyte.Remove(0, strbyte.IndexOf("\"") + 1);// выделяем свойство Close ,которое указывает, замкнут ли список
-                            strclose = strclose.Remove(strclose.IndexOf("\""), strclose.Length - strclose.IndexOf("\""));
-                            strbyte = strbyte.Remove(0, strbyte.IndexOf(">") + 1); // удаляем родительский элемент из разметки вначале
-                            strbyte = strbyte.Remove(strbyte.LastIndexOf("<"), strbyte.Length - strbyte.LastIndexOf("<")); // удаляем родительский элемент вконце разметки
-
-                            // создаём двусвязный список из строк
-                            XmlToObject xml = new XmlToObject();
-                            ListNode[] list = xml.Create(xml.StrElem(strbyte));
-
-                            Console.WriteLine("Список восстановлен!");
-                            Console.WriteLine();
-
-                            Head = list[0];
-                            Tail = list[^1];
-                            Count = list.Length;
-
-                            if (strclose == "1") // если вначале текста была еденица, то список замкнут.делаем связь между первым и последним элементом
-                            {
-                                Head.Previous = Tail;
-                                Tail.Next = Head;
-                                Console.WriteLine("Список замкнут");
-                                Console.WriteLine();
-                            }
-                        }
-                        catch
-                        {
-                            Console.WriteLine("Некорректный текст файла1");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Файл пуст!");
-                    }
+                    Console.WriteLine("Текст записан в файл");
+                    Console.WriteLine("-------------------------------------------------");
                 }
+            }
+            else
+            {
+                Console.WriteLine("Нет заданного списка");
             }
         }
 
 
 
 
+
+
+
+        public void Deserialize(Stream stream)
+        {
+            Head = null;
+            using (stream)
+            {
+                // преобразуем строку в байты
+                byte[] by = new byte[stream.Length];
+                // считываем данные
+                stream.Read(by, 0, by.Length);
+
+                if (by.Length != 0) // Если файл не пуст
+                {
+                    try
+                    {
+                        string xmlString = System.Text.Encoding.Default.GetString(by);
+
+                        CreateElementListNode createElementListNode = new CreateElementListNode(xmlString);
+                        createElementListNode.Create();
+
+                        // 
+                        Head = createElementListNode.ListNodes[0];
+                        Tail = createElementListNode.ListNodes[^1];
+                        Count = createElementListNode.ListNodes.Length;
+
+                        Console.WriteLine("Список восстановлен!");
+                        Console.WriteLine();
+
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Некорректный текст файла1");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Файл пуст!");
+                }
+            }
+        }
+    }
+
+    class Program
+    {
         static void Main()
         {
             // создаем коллекцию двусвязного списка
@@ -496,8 +305,8 @@ namespace SiberTest
             // выводим список
             Console.WriteLine("Созданный список:");
             Console.WriteLine();
-
-            ListRead listr = new ListRead(lr.Head, lr.Count);
+            ListRead lisr = new ListRead(lr);
+            lisr.Read();
             // создаем каталог для файла
             string path = @"C:\New";
             DirectoryInfo dirInfo = new DirectoryInfo(path);
@@ -521,7 +330,8 @@ namespace SiberTest
 
             // чтение списка
 
-            _ = new ListRead(lr1.Head, lr1.Count);
+            ListRead lislr = new ListRead(lr1);
+            lislr.Read();
 
         }
     }
